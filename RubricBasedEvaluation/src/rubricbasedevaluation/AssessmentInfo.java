@@ -75,7 +75,7 @@ public class AssessmentInfo
     }
     
      
-    public boolean deleteStudent(String name)
+    public boolean deleteAssessment(String name)
     {
         int index = searchAssessment(name);
        
