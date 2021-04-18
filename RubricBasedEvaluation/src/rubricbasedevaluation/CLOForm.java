@@ -5,6 +5,11 @@
  */
 package rubricbasedevaluation;
 
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JTable;
+
 /**
  *
  * @author Azeem Hashmi
@@ -14,8 +19,74 @@ public class CLOForm extends javax.swing.JFrame {
     /**
      * Creates new form CLOForm
      */
+    String action;
+    String num;
+    CLO clo;
+    
     public CLOForm() {
         initComponents();
+    }
+    
+    public CLOForm(String Action, String Num) {
+        initComponents();
+        
+        CLOTableModel table = new CLOTableModel(CLOInfo.getCLOInstance().getAllCLO());
+         
+        jTable1.setModel(table);
+        
+         Action increase = new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTable table = (JTable) e.getSource();
+                int row = Integer.valueOf(e.getActionCommand());
+                CLOTableModel model = (CLOTableModel) table.getModel();
+                model.editRow(row);     
+            }
+        };
+        ButtonColumn inc = new ButtonColumn(jTable1, increase, 2);
+        
+       
+         Action deleteAction = new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JTable table = (JTable) e.getSource();
+                int row = Integer.valueOf(e.getActionCommand());
+                CLOTableModel model = (CLOTableModel) table.getModel();
+                model.deleteRow(row);     
+            }
+        };
+        ButtonColumn deleteButton = new ButtonColumn(jTable1, deleteAction, 3);
+       
+        
+        this.action = Action;
+        this.num = Num;
+        
+        if (action.equals("Add"))
+        {
+           clo = new CLO(); 
+        }
+        
+        else if (action.equals("Edit"))
+        {
+            jLabel1.setText("Update CLO Info");
+            createBtn.setText("Update");
+            
+            clo = CLOInfo.getCLOInstance().getCLO(num);
+            jTextArea1.setText(clo.getDesc());
+        }
+        
+        else if (action.equals("Delete"))
+        {
+            jLabel1.setText("Delete CLO Info");
+            createBtn.setText("Delete");
+            
+            clo = CLOInfo.getCLOInstance().getCLO(num);
+            jTextArea1.setText(clo.getDesc());
+            
+            jTextArea1.setEditable(false);
+        }
     }
 
     /**
@@ -33,13 +104,16 @@ public class CLOForm extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        createBtn = new javax.swing.JButton();
+        combo = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -86,11 +160,18 @@ public class CLOForm extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_submit_for_approval_20px.png"))); // NOI18N
-        jButton2.setText("Create");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        createBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_submit_for_approval_20px.png"))); // NOI18N
+        createBtn.setText("Create");
+        createBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                createBtnActionPerformed(evt);
+            }
+        });
+
+        combo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+        combo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboActionPerformed(evt);
             }
         });
 
@@ -110,13 +191,13 @@ public class CLOForm extends javax.swing.JFrame {
                             .addComponent(jLabel2))
                         .addGap(26, 26, 26)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(63, 63, 63)
                         .addComponent(jButton1)
                         .addGap(47, 47, 47)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(createBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(65, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -127,7 +208,7 @@ public class CLOForm extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -135,10 +216,10 @@ public class CLOForm extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1)
-                            .addComponent(jButton2))
+                            .addComponent(createBtn))
                         .addGap(20, 20, 20))))
         );
 
@@ -146,15 +227,43 @@ public class CLOForm extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(229, 229, 220));
 
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel4.setText("CLO");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 382, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(167, 167, 167)
+                .addComponent(jLabel4)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 281, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(86, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("View Record", jPanel3);
@@ -171,7 +280,7 @@ public class CLOForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -188,12 +297,31 @@ public class CLOForm extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void createBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBtnActionPerformed
         // TODO add your handling code here:
-        TeacherMenu tm = new TeacherMenu();
-        tm.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_jButton2ActionPerformed
+        if (action.equals("Add"))
+        {
+            CLO c = new CLO();
+            c.setcloNum(combo.getSelectedItem().toString());
+            c.setDesc(jTextArea1.getText());
+            CLOInfo.getCLOInstance().addCLO(c);
+        }
+        else if (action.equals("Edit"))
+        {
+            CLO c = new CLO();
+            c.setcloNum(combo.getSelectedItem().toString());
+            c.setDesc(jTextArea1.getText());
+            CLOInfo.getCLOInstance().updateCLO(num, c);
+        }
+        else if (action.equals("Delete"))
+        {
+            CLOInfo.getCLOInstance().deleteCLO(num);
+        }
+    }//GEN-LAST:event_createBtnActionPerformed
+
+    private void comboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboActionPerformed
 
     /**
      * @param args the command line arguments
@@ -231,18 +359,21 @@ public class CLOForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> combo;
+    private javax.swing.JButton createBtn;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
